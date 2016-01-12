@@ -1,0 +1,18 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+tabs:
+    fields:
+
+        app_id:
+            label: App Id
+            type: text
+            size: small
+            tab: Facebook
+
+        app_secret:
+            label: App Secret
+            type: text
+            size: small
+            tab: Facebook
