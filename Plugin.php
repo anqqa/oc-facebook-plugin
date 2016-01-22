@@ -1,6 +1,7 @@
 <?php namespace Klubitus\Facebook;
 
 use Backend;
+use RainLab\User\Models\User as UserModel;
 use System\Classes\PluginBase;
 
 /**
@@ -23,17 +24,22 @@ class Plugin extends PluginBase {
         ];
     }
 
+
+    public function boot() {
+        UserModel::extend(function($model) {
+            $model->hasMany['user_externals'] = ['Klubitus\Facebook\Models\UserExternal'];
+        });
+    }
+
+
     /**
      * Registers any front-end components implemented in this plugin.
      *
      * @return array
      */
-    public function registerComponents()
-    {
-        return []; // Remove this line to activate
-
+    public function registerComponents() {
         return [
-            'Klubitus\Facebook\Components\MyComponent' => 'myComponent',
+            'Klubitus\Facebook\Components\FacebookConnect' => 'FacebookConnect',
         ];
     }
 

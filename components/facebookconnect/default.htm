@@ -1,0 +1,51 @@
+{% put scripts %}
+<script>
+    var onLoginWithFacebook = function() {
+        FB.login(function(response) {
+            if (response.authResponse) {
+                var redirectSignup = "{{ __SELF__.redirectSignup }}";
+                var redirectLogin  = "{{ __SELF__.redirectLogin }}";
+
+                $.request("{{ __SELF__~'::onLoginWithFacebook' }}", {
+                    data: {
+                        redirect: true,
+                        redirect_signup: redirectSignup,
+                        redirect_login: redirectLogin
+                    }
+                });
+            }
+            else {
+                $.request("{{ __SELF__~'::onFacebookError' }}", {
+                    data: {
+                        status: response.status
+                    }
+                })
+            }
+        });
+
+        return false;
+    };
+
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId   : '{{ __SELF__.appId }}',
+            cookie  : true,
+            xfbml   : false,
+            version : '{{ __SELF__.graphAPIVersion }}'
+        });
+    };
+
+    (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
+{% endput %}
+
+<a class="button button--primary button--full" onclick="onLoginWithFacebook()">
+    <i class="fa fa-facebook"></i>
+    Login with Facebook
+</a>
