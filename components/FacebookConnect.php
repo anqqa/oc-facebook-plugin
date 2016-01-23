@@ -7,11 +7,13 @@ use Klubitus\Facebook\Classes\GraphAPI;
 use Klubitus\Facebook\Models\UserExternal as UserExternalModel;
 use Log;
 use October\Rain\Database\ModelException;
+use October\Rain\Exception\AjaxException;
 use October\Rain\Exception\SystemException;
 use RainLab\User\Models\User as UserModel;
 use RainLab\User\Components\Session;
 use Redirect;
 use Request;
+use URL;
 
 class FacebookConnect extends Session {
 
@@ -82,15 +84,24 @@ class FacebookConnect extends Session {
      */
     public function onRun() {
         $this->appId          = GraphAPI::instance()->appId;
-        $this->redirectLogin  = $this->controller->pageUrl($this->property('redirectLogin'));
-        $this->redirectSignup = $this->controller->pageUrl($this->property('redirectSignup'));
+        $this->redirectLogin  = $this->property('redirectLogin') ? $this->controller->pageUrl($this->property('redirectLogin')) : URL::previous();
+        $this->redirectSignup = $this->property('redirectSignup') ? $this->controller->pageUrl($this->property('redirectSignup')) : URL::previous();
 
         return parent::onRun();
     }
 
 
+    /**
+     * Failed login with Facebook.
+     */
     public function onFacebookError() {
+        $status = (int)post('status');
 
+        Log::error('Facebook login failed.', [
+            'status' => $status,
+        ]);
+
+        Flash::error('Facebook login failed.');
     }
 
 
@@ -106,6 +117,7 @@ class FacebookConnect extends Session {
             $facebookUser = $response->getGraphUser();
         }
         catch (SystemException $e) {
+
             Flash::error('Facebook login failed.');
 
             return;
@@ -168,10 +180,10 @@ class FacebookConnect extends Session {
 
         if (post('redirect', true)) {
             if ($newUser) {
-                return Redirect::intended(post('redirect_signup', Request::fullUrl()));
+                return Redirect::to(post('redirect_signup', URL::previous() ?: Request::fullUrl()));
             }
             else {
-                return Redirect::intended(post('redirect_login', Request::fullUrl()));
+                return Redirect::to(post('redirect_login', URL::previous() ?: Request::fullUrl()));
             }
         }
 
