@@ -5,9 +5,9 @@ use Flash;
 use Cms\Classes\ComponentBase;
 use Klubitus\Facebook\Classes\GraphAPI;
 use Klubitus\Facebook\Models\UserExternal as UserExternalModel;
+use Lang;
 use Log;
 use October\Rain\Database\ModelException;
-use October\Rain\Exception\AjaxException;
 use October\Rain\Exception\SystemException;
 use RainLab\User\Models\User as UserModel;
 use RainLab\User\Components\Session;
@@ -101,7 +101,7 @@ class FacebookConnect extends Session {
             'status' => $status,
         ]);
 
-        Flash::error('Facebook login failed.');
+        Flash::error(Lang::get('klubitus.facebook::lang.login.login_failed'));
     }
 
 
@@ -155,7 +155,7 @@ class FacebookConnect extends Session {
                     catch (ModelException $e) {
                         Log::error('Facebook sign up failed: ' . $e->getMessage());
 
-                        Flash::error('Facebook sign up failed.');
+                        Flash::error(Lang::get('klubitus.facebook::lang.register.register_failed'));
 
                         return;
                     }
@@ -186,8 +186,6 @@ class FacebookConnect extends Session {
                 return Redirect::to(post('redirect_login', URL::previous() ?: Request::fullUrl()));
             }
         }
-
-        Flash::success('Welcome, ' . $user->username . '!');
     }
 
 }
