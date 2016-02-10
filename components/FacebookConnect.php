@@ -173,6 +173,10 @@ class FacebookConnect extends Session {
 
         }
         else {
+            $externalUser->token = $accessToken->getValue();
+            $externalUser->expires_at = $accessToken->getExpiresAt();
+            $externalUser->save();
+
             $user = $externalUser->user;
         }
 
