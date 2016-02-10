@@ -20,7 +20,7 @@ class Plugin extends PluginBase {
             'description' => 'Facebook functionality for Klubitus.',
             'author'      => 'Antti Qvickström',
             'icon'        => 'icon-facebook',
-            'homepage'    => 'https://github.com/anqqa/klubitus-octobercms-plugins',
+            'homepage'    => 'https://github.com/anqqa/oc-facebook-plugin',
         ];
     }
 
